@@ -9,21 +9,16 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret-key-goes-here'
 
 # CREATE DATABASE
-
-
 class Base(DeclarativeBase):
     pass
-
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
 db = SQLAlchemy(model_class=Base)
 db.init_app(app)
 
-
 # Configure Flask-Login's Login Manager
 login_manager = LoginManager()
 login_manager.init_app(app)
-
 
 # Create a user_loader callback
 @login_manager.user_loader
@@ -31,8 +26,6 @@ def load_user(user_id):
     return db.get_or_404(User, user_id)
 
 # CREATE TABLE IN DB
-
-
 class User(db.Model):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     email: Mapped[str] = mapped_column(String(100), unique=True)
@@ -46,15 +39,12 @@ class User(db.Model):
     def get_id(self):
         return str(self.id)
 
-
 with app.app_context():
     db.create_all()
-
 
 @app.route('/')
 def home():
     return render_template("index.html")
-
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
@@ -81,7 +71,6 @@ def register():
 
     return render_template("register.html")
 
-
 @app.route('/login', methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -100,11 +89,9 @@ def login():
             return render_template("secrets.html", user=user)
     return render_template("login.html")
 
-
 @app.route('/secrets')
 def secrets():
     return render_template("secrets.html")
-
 
 @app.route('/logout')
 def logout():
@@ -113,5 +100,7 @@ def logout():
 
 @app.route('/download')
 def download():
-    return send_from_directory('static', path="files/cheat_sheet.pdf")
+    return send_from_directory('static/files', filename="cheat_sheet.pdf")
 
+if __name__ == "__main__":
+    app.run(debug=True)
