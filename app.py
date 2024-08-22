@@ -115,6 +115,3 @@ def logout():
 def download():
     return send_from_directory('static', path="files/cheat_sheet.pdf")
 
-
-if __name__ == "__main__":
-    app.run(debug=False)

@@ -1,0 +1,1 @@
+from wsqi import app
